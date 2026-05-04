@@ -54,8 +54,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 mr-6">
-          <Heart className="h-6 w-6 text-primary fill-primary" />
-          <span className="text-xl font-bold">OpenHeart</span>
+          <span className="text-xl font-extrabold text-[#064E3B]">OpenHeart</span>
         </Link>
 
         {/* Desktop Nav */}
