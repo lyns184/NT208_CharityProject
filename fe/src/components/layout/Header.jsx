@@ -97,51 +97,74 @@ export default function Header() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                    <Avatar className="h-9 w-9">
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-emerald-50">
+                    <Avatar className="h-10 w-10 border-2 border-emerald-600">
                       <AvatarImage src={user?.avatar} alt={user?.name} />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-emerald-100 text-emerald-700 font-bold">
                         {user?.name?.charAt(0)?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{user?.name}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <DropdownMenuContent align="end" className="w-64 rounded-2xl shadow-lg border-slate-200">
+                  {/* User Info Section */}
+                  <div className="px-4 py-4 bg-linear-to-r from-emerald-50 to-emerald-50/50">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12 border-2 border-emerald-200">
+                        <AvatarImage src={user?.avatar} alt={user?.name} />
+                        <AvatarFallback className="bg-emerald-100 text-emerald-700 font-bold text-lg">
+                          {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-900">{user?.name}</p>
+                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                      </div>
+                    </div>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Hồ sơ
+                  
+                  <DropdownMenuSeparator className="my-2" />
+                  
+                  {/* Menu Items */}
+                  <DropdownMenuItem asChild className="px-4 py-2.5 rounded-lg mx-2 my-1 cursor-pointer hover:bg-emerald-50 transition-colors">
+                    <Link to="/profile" className="flex items-center">
+                      <User className="mr-3 h-4 w-4 text-emerald-600" />
+                      <span className="text-sm font-medium text-slate-700">Hồ sơ</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/messages" className="cursor-pointer">
-                      <MessageSquare className="mr-2 h-4 w-4" />
-                      Nhắn tin
+                  
+                  <DropdownMenuItem asChild className="px-4 py-2.5 rounded-lg mx-2 my-1 cursor-pointer hover:bg-emerald-50 transition-colors">
+                    <Link to="/messages" className="flex items-center">
+                      <MessageSquare className="mr-3 h-4 w-4 text-emerald-600" />
+                      <span className="text-sm font-medium text-slate-700">Nhắn tin</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/my-campaigns" className="cursor-pointer">
-                      <FolderHeart className="mr-2 h-4 w-4" />
-                      Chiến dịch của tôi
+                  
+                  <DropdownMenuItem asChild className="px-4 py-2.5 rounded-lg mx-2 my-1 cursor-pointer hover:bg-emerald-50 transition-colors">
+                    <Link to="/my-campaigns" className="flex items-center">
+                      <FolderHeart className="mr-3 h-4 w-4 text-emerald-600" />
+                      <span className="text-sm font-medium text-slate-700">Chiến dịch của tôi</span>
                     </Link>
                   </DropdownMenuItem>
+                  
                   {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin/dashboard" className="cursor-pointer">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuSeparator className="my-2" />
+                      <DropdownMenuItem asChild className="px-4 py-2.5 rounded-lg mx-2 my-1 cursor-pointer hover:bg-blue-50 transition-colors">
+                        <Link to="/admin/dashboard" className="flex items-center">
+                          <LayoutDashboard className="mr-3 h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium text-slate-700">Admin Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
                   )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Đăng xuất
+                  
+                  <DropdownMenuSeparator className="my-2" />
+                  
+                  {/* Logout */}
+                  <DropdownMenuItem onClick={logout} className="px-4 py-2.5 rounded-lg mx-2 my-1 cursor-pointer hover:bg-red-50 transition-colors">
+                    <LogOut className="mr-3 h-4 w-4 text-red-600" />
+                    <span className="text-sm font-medium text-red-600">Đăng xuất</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -194,46 +217,81 @@ export default function Header() {
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-3 pt-3">
                       {!isAdmin && (
-                        <Button asChild className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => setOpen(false)}>
+                        <Button asChild className="bg-emerald-600 text-white hover:bg-emerald-700 w-full justify-start" onClick={() => setOpen(false)}>
                           <Link to="/campaigns/create">
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Tạo chiến dịch
                           </Link>
                         </Button>
                       )}
+                      
+                      {/* User Info Section */}
+                      <div className="rounded-lg bg-emerald-50 p-4 mb-2">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10 border-2 border-emerald-200">
+                            <AvatarImage src={user?.avatar} alt={user?.name} />
+                            <AvatarFallback className="bg-emerald-100 text-emerald-700 font-bold">
+                              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-slate-900">{user?.name}</p>
+                            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Menu Items */}
                       <Link
                         to="/profile"
-                        className="text-sm text-muted-foreground hover:text-primary"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-emerald-50 transition-colors"
                         onClick={() => setOpen(false)}
                       >
-                        Hồ sơ
+                        <User className="h-4 w-4 text-emerald-600" />
+                        <span className="text-sm font-medium">Hồ sơ</span>
                       </Link>
+                      
                       <Link
                         to="/messages"
-                        className="text-sm text-muted-foreground hover:text-primary"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-emerald-50 transition-colors"
                         onClick={() => setOpen(false)}
                       >
-                        Nhắn tin
+                        <MessageSquare className="h-4 w-4 text-emerald-600" />
+                        <span className="text-sm font-medium">Nhắn tin</span>
                       </Link>
+                      
+                      <Link
+                        to="/my-campaigns"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-emerald-50 transition-colors"
+                        onClick={() => setOpen(false)}
+                      >
+                        <FolderHeart className="h-4 w-4 text-emerald-600" />
+                        <span className="text-sm font-medium">Chiến dịch của tôi</span>
+                      </Link>
+                      
                       {isAdmin && (
                         <Link
                           to="/admin/dashboard"
-                          className="text-sm text-muted-foreground hover:text-primary"
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-blue-50 transition-colors"
                           onClick={() => setOpen(false)}
                         >
-                          Admin Dashboard
+                          <LayoutDashboard className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium">Admin Dashboard</span>
                         </Link>
                       )}
+                      
                       <Button
                         variant="destructive"
                         size="sm"
+                        className="w-full justify-start mt-2"
                         onClick={() => {
                           setOpen(false)
                           logout()
                         }}
                       >
+                        <LogOut className="mr-2 h-4 w-4" />
                         Đăng xuất
                       </Button>
                     </div>
