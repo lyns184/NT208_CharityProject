@@ -31,6 +31,7 @@ export default function SocialComposer({
   const [campaignId, setCampaignId] = useState(initialCampaignId)
   const [campaigns, setCampaigns] = useState([])
   const [mediaFiles, setMediaFiles] = useState([])
+  const [previews, setPreviews] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingCampaigns, setIsLoadingCampaigns] = useState(false)
 
@@ -69,12 +70,78 @@ export default function SocialComposer({
   const selectedFiles = useMemo(() => Array.from(mediaFiles || []), [mediaFiles])
 
   const handleFileChange = (event) => {
-    setMediaFiles(event.target.files ? Array.from(event.target.files) : [])
+    const incoming = event.target.files ? Array.from(event.target.files) : []
+
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+      'video/mp4', 'video/webm', 'video/quicktime'
+    ]
+    const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+
+    const accepted = []
+    const rejected = []
+
+    for (const file of incoming) {
+      if (!allowedTypes.includes(file.type)) {
+        rejected.push({ file, reason: 'type' })
+        continue
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        rejected.push({ file, reason: 'size' })
+        continue
+      }
+      accepted.push(file)
+    }
+
+    if (rejected.length > 0) {
+      rejected.forEach(({ file, reason }) => {
+        if (reason === 'type') toast.error(`${file.name}: Loại file không được hỗ trợ`)
+        else toast.error(`${file.name}: Kích thước vượt quá 50MB`)
+      })
+    }
+
+    // Merge with existing files so user can add in multiple picks
+    const combined = [...mediaFiles, ...accepted]
+    if (combined.length > 10) {
+      toast.error('Chỉ được tải tối đa 10 tệp')
+      setMediaFiles(combined.slice(0, 10))
+    } else {
+      setMediaFiles(combined)
+    }
+
+    // Reset the input so same file can be selected again if needed
+    if (event && event.target) event.target.value = ''
   }
 
   const removeFile = (index) => {
     setMediaFiles((prev) => prev.filter((_, i) => i !== index))
   }
+
+  // Generate preview URLs when mediaFiles change
+  useEffect(() => {
+    // Revoke previous previews
+    setPreviews((prev) => {
+      prev.forEach((p) => { if (p.url && p.objectUrl) URL.revokeObjectURL(p.objectUrl) })
+      return []
+    })
+
+    const next = mediaFiles.map((file) => {
+      const isVideo = String(file.type || "").startsWith("video/")
+      const objectUrl = URL.createObjectURL(file)
+      return {
+        name: file.name,
+        size: file.size,
+        type: isVideo ? 'video' : 'image',
+        objectUrl,
+      }
+    })
+
+    setPreviews(next)
+
+    return () => {
+      next.forEach((p) => { if (p.objectUrl) URL.revokeObjectURL(p.objectUrl) })
+    }
+  }, [mediaFiles])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -86,15 +153,16 @@ export default function SocialComposer({
 
     setIsSubmitting(true)
     try {
-      const uploadedMedia = []
-      for (const file of selectedFiles) {
-        const uploadResult = await uploadApi.uploadFile(file)
+      let uploadedMedia = []
+      if (selectedFiles.length > 0) {
+        const uploadResult = await uploadApi.uploadFiles(selectedFiles)
         const payload = uploadResult.data?.data || uploadResult.data
-        uploadedMedia.push({
-          type: file.type.startsWith("video/") ? "video" : "image",
-          url: payload?.url,
-          etag: payload?.etag || "",
-        })
+        const arr = Array.isArray(payload) ? payload : [payload]
+        uploadedMedia = arr.map((p, idx) => ({
+          type: (selectedFiles[idx]?.type || '').startsWith('video/') ? 'video' : 'image',
+          url: p?.url,
+          etag: p?.etag || '',
+        }))
       }
 
       const res = await createSocialPost({
@@ -198,19 +266,29 @@ export default function SocialComposer({
               />
               <p className="mt-2 text-xs text-slate-600">Tải lên hình ảnh hoặc video (Tối đa 10 tệp)</p>
 
-              {selectedFiles.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs font-semibold text-slate-700">Tệp đã chọn:</p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {selectedFiles.map((file, index) => (
-                      <div key={`${file.name}-${index}`} className="flex items-center justify-between rounded-lg bg-white px-3 py-2 text-sm shadow-sm ring-1 ring-slate-200">
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate font-medium text-slate-900">{file.name}</p>
-                          <p className="text-xs text-muted-foreground">{Math.round(file.size / 1024)} KB</p>
+              {previews.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold text-slate-700 mb-2">Tệp đã chọn:</p>
+                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-3">
+                    {previews.map((p, index) => (
+                      <div key={`${p.name}-${index}`} className="relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-slate-200">
+                        {p.type === 'image' ? (
+                          <img src={p.objectUrl} alt={p.name} className="h-36 w-full object-cover" />
+                        ) : (
+                          <video src={p.objectUrl} className="h-36 w-full object-cover" muted />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="absolute right-2 top-2 rounded-full bg-white/80 p-1 hover:bg-white"
+                          aria-label="Xóa tệp"
+                        >
+                          <X className="h-4 w-4 text-slate-700" />
+                        </button>
+                        <div className="p-2 text-xs text-slate-600">
+                          <div className="truncate font-medium">{p.name}</div>
+                          <div className="text-[11px]">{Math.round(p.size / 1024)} KB</div>
                         </div>
-                        <Button type="button" variant="ghost" size="sm" onClick={() => removeFile(index)} className="ml-2 flex-shrink-0">
-                          <X className="h-4 w-4" />
-                        </Button>
                       </div>
                     ))}
                   </div>

@@ -76,7 +76,7 @@ export default function Register() {
 
   return (
     <div className="w-full bg-background">
-      <div className="mx-auto flex w-full max-w-7xl overflow-hidden rounded-none bg-background md:min-h-[calc(100vh-9rem)] md:flex-row">
+      <div className="mx-auto flex w-full max-w-7xl flex-col overflow-hidden rounded-none bg-background md:min-h-[calc(100vh-9rem)] md:flex-row">
         <RegisterVisualPanel />
         <RegisterFormCard
           form={form}

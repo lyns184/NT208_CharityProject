@@ -111,7 +111,7 @@ export default function Organizers() {
 
             <Button
               type="button"
-              className="h-12 min-w-35 rounded-full bg-[#10B981] px-6 text-white hover:bg-[#059669]"
+              className="h-12 w-full rounded-full bg-[#10B981] px-6 text-white hover:bg-[#059669] sm:w-auto sm:min-w-35"
               onClick={() => setVisibleCount(6)}
             >
               Tìm kiếm
@@ -119,7 +119,7 @@ export default function Organizers() {
           </div>
         </div>
 
-        <div className="mb-6 flex items-center gap-8 border-b border-[#e5e7eb]">
+        <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-[#e5e7eb]">
           {[
             { key: ACCOUNT_TYPE.ORGANIZATION, label: "Tổ chức" },
             { key: ACCOUNT_TYPE.INDIVIDUAL, label: "Cá nhân" },

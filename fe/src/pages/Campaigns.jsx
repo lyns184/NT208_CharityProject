@@ -245,7 +245,7 @@ export default function Campaigns() {
             <div className="flex flex-col gap-1">
               <Label className="text-xs font-semibold uppercase text-[#6b7280]">Trạng thái</Label>
               <Select value={status} onValueChange={(value) => setStatus(value)}>
-                <SelectTrigger className="h-11 w-50 rounded-lg border-[#e5e7eb] bg-white text-[#1f2937]">
+                <SelectTrigger className="h-11 w-full rounded-lg border-[#e5e7eb] bg-white text-[#1f2937] sm:w-[12.5rem]">
                   <SelectValue placeholder="Trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
@@ -261,7 +261,7 @@ export default function Campaigns() {
             <div className="flex flex-col gap-1">
               <Label className="text-xs font-semibold uppercase text-[#6b7280]">Sắp xếp</Label>
               <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
-                <SelectTrigger className="h-11 w-45 rounded-lg border-[#e5e7eb] bg-white text-[#1f2937]">
+                <SelectTrigger className="h-11 w-full rounded-lg border-[#e5e7eb] bg-white text-[#1f2937] sm:w-[11.25rem]">
                   <SelectValue placeholder="Sắp xếp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -288,7 +288,7 @@ export default function Campaigns() {
             </div>
           </div>
 
-          <div className="relative flex w-full max-w-xl items-center rounded-lg border border-[#e5e7eb] bg-white px-4 py-2 shadow-sm lg:w-105">
+          <div className="relative flex w-full max-w-xl items-center rounded-lg border border-[#e5e7eb] bg-white px-4 py-2 shadow-sm lg:w-[26.25rem]">
             <input
               value={search}
               onChange={(e) => {

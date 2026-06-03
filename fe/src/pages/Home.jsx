@@ -80,7 +80,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#f0fdf4]">
       {/* Hero Banner */}
-      <section className="relative h-[600px] overflow-hidden">
+      <section className="relative h-[520px] sm:h-[600px] overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -111,7 +111,7 @@ export default function Home() {
       {/* Section 1: Featured Fundraisers */}
       <section className="bg-[#f0fdf4] px-4 py-12 md:py-16">
         <div className="max-w-7xl mx-auto rounded-3xl bg-gradient-to-br from-[#a7f3d0] to-[#10B981] p-6 md:p-10 shadow-lg">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
             <h2 className="text-white text-3xl sm:text-4xl">Tổ chức, cá nhân gây quỹ nổi bật</h2>
             <a href="/organizers" className="text-white hover:text-[#065f46] transition">Xem tất cả →</a>
           </div>
@@ -196,7 +196,7 @@ export default function Home() {
             </div>
 
             {/* Statistics Grid */}
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {[
                 { number: "50,000+", label: "Nhà hào tâm" },
                 { number: "1,200+", label: "Tổ chức từ thiện" },
@@ -218,7 +218,7 @@ export default function Home() {
       {/* Section 3: Organization Campaigns */}
       <section className="py-16 px-4 bg-[#f0fdf4]">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
             <h2 className="text-[#059669] text-3xl">Chiến dịch của Tổ chức</h2>
             <a href="/campaigns" className="text-[#10B981] hover:text-[#059669] transition">Xem tất cả →</a>
           </div>
@@ -238,7 +238,7 @@ export default function Home() {
       {/* Section 4: Individual Campaigns */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
             <h2 className="text-[#059669] text-3xl">Chiến dịch của Cá nhân</h2>
             <a href="/campaigns" className="text-[#10B981] hover:text-[#059669] transition">Xem tất cả →</a>
           </div>

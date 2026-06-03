@@ -3,14 +3,14 @@ import { Upload, ImageIcon, Loader2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
-import api from "@/api/axios"
-import { API } from "@/constants/api-endpoints"
+import { uploadApi } from "@/api/upload.api"
 
 export default function ImageUpload({
   onUpload,
   preview: externalPreview,
   accept = "image/*",
   label = "Tải ảnh lên",
+  returnPayload = false,
 }) {
   const [uploading, setUploading] = useState(false)
   const [localPreview, setLocalPreview] = useState(null)
@@ -33,15 +33,14 @@ export default function ImageUpload({
 
     setUploading(true)
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-
-      const { data } = await api.post(API.UPLOAD, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-
-      const uploadedUrl = data?.data?.url || data?.url
-      onUpload?.(uploadedUrl || null)
+      const res = await uploadApi.uploadFile(file)
+      const payload = res.data?.data || res.data
+      const uploadedUrl = payload?.url || (typeof payload === 'string' ? payload : null)
+      if (returnPayload) {
+        onUpload?.(payload || null)
+      } else {
+        onUpload?.(uploadedUrl || null)
+      }
       toast.success("Tải ảnh lên thành công!")
     } catch (error) {
       toast.error(

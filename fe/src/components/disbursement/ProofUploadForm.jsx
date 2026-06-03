@@ -141,6 +141,7 @@ export default function ProofUploadForm({ disbursementId, onSuccess }) {
                 <ImageUpload
                   preview={typeof img === 'string' ? img : img?.url || null}
                   label={`Ảnh minh chứng ${index + 1}`}
+                  returnPayload={true}
                   onUpload={(result) => handleUpload(index, result)}
                 />
                 <Button

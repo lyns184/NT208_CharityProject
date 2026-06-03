@@ -170,7 +170,7 @@ export default function DisbursementRequest() {
       {/* Campaign summary card */}
       <Card className="mb-6 overflow-hidden border-emerald-100 shadow-sm">
         <CardContent className="p-5">
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             {/* Thumbnail */}
             {imageUrl ? (
               <img
@@ -184,7 +184,7 @@ export default function DisbursementRequest() {
               </div>
             )}
             <div className="min-w-0 flex-1 space-y-2">
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <h2 className="text-base font-semibold leading-tight line-clamp-2 text-slate-900">
                   {campaign.title}
                 </h2>
@@ -195,7 +195,7 @@ export default function DisbursementRequest() {
           </div>
 
           {/* Financial summary */}
-          <div className="mt-4 grid grid-cols-3 gap-3">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="rounded-2xl bg-emerald-50 p-3 text-center ring-1 ring-emerald-100">
               <p className="text-xs text-emerald-700">Tổng nhận</p>
               <p className="text-sm font-semibold text-emerald-800">{formatVND(currentAmount)}</p>
@@ -218,7 +218,7 @@ export default function DisbursementRequest() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-6">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-base font-semibold text-slate-900">Yêu cầu giải ngân</h3>
           </div>
 

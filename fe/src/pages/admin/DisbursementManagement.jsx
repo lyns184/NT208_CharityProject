@@ -123,8 +123,8 @@ export default function DisbursementManagement() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="w-[360px]">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <div className="w-full sm:w-[360px]">
               <Input
                 placeholder="Tìm tên chiến dịch"
                 value={searchQuery}

@@ -103,7 +103,7 @@ function PersonalInfoTab({ user, refreshProfile }) {
 
   return (
     <Card className="rounded-3xl border border-slate-100 bg-white shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="flex items-center gap-2 text-lg">
           <User className="h-5 w-5" />
           Thông tin cá nhân
@@ -532,38 +532,41 @@ function DonationHistoryTab() {
               return (
                 <div
                   key={id}
-                  className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4"
+                  className="rounded-2xl border border-slate-100 bg-white px-4 py-4 shadow-sm sm:px-5"
                 >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-semibold text-slate-900">
-                        {donation.campaignTitle || donation.campaignId?.title || "Chiến dịch"}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start gap-2">
+                        <p className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">
+                          {donation.campaignTitle || donation.campaignId?.title || "Chiến dịch"}
+                        </p>
+                        {(donation.isAnonymous || donation.anonymous) && (
+                          <span className="inline-flex items-center gap-1 whitespace-nowrap text-xs text-slate-400">
+                            <EyeOff className="h-4 w-4" />
+                            Ẩn danh
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-xs text-slate-400">
+                        {formatDate(donation.createdAt)}
                       </p>
-                      {(donation.isAnonymous || donation.anonymous) && (
-                        <span className="inline-flex items-center gap-2 ml-2">
-                          <EyeOff className="h-4 w-4 text-slate-400" />
-                          <span className="text-xs text-slate-400 font-light">Ẩn danh</span>
-                        </span>
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:items-end">
+                      <p className="text-sm font-semibold text-emerald-700">
+                        {formatVND(donation.amount)}
+                      </p>
+                      <span className="inline-flex w-fit rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                        {donation.paymentStatus === "SUCCESS" ? "THÀNH CÔNG" : "ĐANG XỬ LÝ"}
+                      </span>
+                      {campaignId && (
+                        <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+                          <Link to={`/campaigns/${campaignId}`}>
+                            Xem chi tiết
+                          </Link>
+                        </Button>
                       )}
                     </div>
-                    <p className="mt-1 text-xs text-slate-400">
-                      {formatDate(donation.createdAt)}
-                    </p>
-                  </div>
-                  <div className="ml-4 text-right">
-                    <p className="text-sm font-semibold text-emerald-700">
-                      {formatVND(donation.amount)}
-                    </p>
-                    <span className="mt-1 inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
-                      {donation.paymentStatus === "SUCCESS" ? "THÀNH CÔNG" : "ĐANG XỬ LÝ"}
-                    </span>
-                    {campaignId && (
-                      <Button asChild variant="outline" size="sm" className="mt-2">
-                        <Link to={`/campaigns/${campaignId}`}>
-                          Xem chi tiết
-                        </Link>
-                      </Button>
-                    )}
                   </div>
                 </div>
               )
@@ -610,7 +613,7 @@ function PersonalInfoTabView({ userData }) {
   return (
     <Card className="rounded-3xl border border-slate-100 bg-white shadow-sm">
       <CardHeader className="border-b border-slate-100 p-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle className="text-xl font-bold text-slate-900">
             Thông tin cá nhân
           </CardTitle>
@@ -621,7 +624,7 @@ function PersonalInfoTabView({ userData }) {
       </CardHeader>
 
       <CardContent className="space-y-6 p-8">
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label className="text-xs font-semibold uppercase text-slate-500">
               Họ và tên
@@ -747,7 +750,7 @@ function DonationHistoryTabView({ userId }) {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="rounded-2xl border border-slate-100 bg-emerald-700 shadow-sm">
           <CardContent className="p-6">
             <p className="text-sm font-medium text-emerald-50">
@@ -810,34 +813,37 @@ function DonationHistoryTabView({ userId }) {
                 return (
                   <div
                     key={id}
-                    className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4"
+                    className="rounded-2xl border border-slate-100 bg-white px-4 py-4 shadow-sm sm:px-5"
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-900">
-                        {donation.campaignTitle ||
-                          donation.campaignId?.title ||
-                          "Chiến dịch"}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-400">
-                        {formatDate(donation.createdAt)}
-                      </p>
-                    </div>
-                    <div className="ml-4 text-right">
-                      <p className="text-sm font-semibold text-emerald-700">
-                        {formatVND(donation.amount)}
-                      </p>
-                      <span className="mt-1 inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
-                        {donation.paymentStatus === "SUCCESS"
-                          ? "THÀNH CÔNG"
-                          : "ĐANG XỬ LÝ"}
-                      </span>
-                      {campaignId && (
-                        <Button asChild variant="outline" size="sm" className="mt-2">
-                          <Link to={`/campaigns/${campaignId}`}>
-                            Xem chi tiết
-                          </Link>
-                        </Button>
-                      )}
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-slate-900">
+                          {donation.campaignTitle ||
+                            donation.campaignId?.title ||
+                            "Chiến dịch"}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">
+                          {formatDate(donation.createdAt)}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col gap-2 sm:items-end">
+                        <p className="text-sm font-semibold text-emerald-700">
+                          {formatVND(donation.amount)}
+                        </p>
+                        <span className="inline-flex w-fit rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                          {donation.paymentStatus === "SUCCESS"
+                            ? "THÀNH CÔNG"
+                            : "ĐANG XỬ LÝ"}
+                        </span>
+                        {campaignId && (
+                          <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+                            <Link to={`/campaigns/${campaignId}`}>
+                              Xem chi tiết
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )
@@ -987,6 +993,8 @@ export default function Profile() {
   const { profileID } = useParams()
   const [otherUserData, setOtherUserData] = useState(null)
   const [otherUserLoading, setOtherUserLoading] = useState(false)
+  const [ownProfileTab, setOwnProfileTab] = useState("profile")
+  const [otherProfileTab, setOtherProfileTab] = useState("profile")
 
   // Determine if viewing own profile or other user's profile
   const isOwnProfile = !profileID || profileID === user?._id
@@ -1025,8 +1033,22 @@ export default function Profile() {
           </p>
         </div>
 
-        <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="mx-auto flex w-full max-w-3xl flex-wrap justify-center gap-2 rounded-full border border-slate-100 bg-white p-2 shadow-sm">
+        <Tabs value={ownProfileTab} onValueChange={setOwnProfileTab} className="space-y-6">
+          <div className="sm:hidden">
+            <Select value={ownProfileTab} onValueChange={setOwnProfileTab}>
+              <SelectTrigger className="h-11 w-full rounded-full border-slate-200 bg-white shadow-sm">
+                <SelectValue placeholder="Chọn mục" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="profile">Thông tin cá nhân</SelectItem>
+                <SelectItem value="password">Đổi mật khẩu</SelectItem>
+                <SelectItem value="kyc">Xác minh danh tính</SelectItem>
+                <SelectItem value="donations">Lịch sử đóng góp</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <TabsList className="mx-auto hidden w-full max-w-3xl flex-wrap justify-center gap-2 rounded-full border border-slate-100 bg-white p-2 shadow-sm sm:flex">
             <TabsTrigger
               value="profile"
               className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:bg-emerald-600 data-[state=active]:text-white"
@@ -1127,8 +1149,20 @@ export default function Profile() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="mx-auto flex w-full max-w-3xl flex-wrap justify-center gap-2 rounded-full border border-slate-100 bg-white p-2 shadow-sm">
+      <Tabs value={otherProfileTab} onValueChange={setOtherProfileTab} className="space-y-6">
+        <div className="sm:hidden">
+          <Select value={otherProfileTab} onValueChange={setOtherProfileTab}>
+            <SelectTrigger className="h-11 w-full rounded-full border-slate-200 bg-white shadow-sm">
+              <SelectValue placeholder="Chọn mục" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="profile">Thông tin cá nhân</SelectItem>
+              <SelectItem value="campaigns">Chiến dịch đã tạo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <TabsList className="mx-auto hidden w-full max-w-3xl flex-wrap justify-center gap-2 rounded-full border border-slate-100 bg-white p-2 shadow-sm sm:flex">
           <TabsTrigger
             value="profile"
             className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:bg-emerald-600 data-[state=active]:text-white"

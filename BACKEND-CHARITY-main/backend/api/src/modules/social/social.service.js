@@ -24,6 +24,11 @@ class SocialService {
     const campaignId = data.campaignId || null
     const media = normalizeMedia(data.media)
 
+    // Enforce maximum number of media items
+    if (media.length > 10) {
+      throw new AppError('Chỉ được tối đa 10 tệp media', 400, 'VALIDATION_ERROR')
+    }
+
     if (!content) {
       throw new AppError('Vui lòng nhập nội dung bài viết', 400, 'VALIDATION_ERROR')
     }

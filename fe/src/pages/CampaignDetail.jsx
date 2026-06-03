@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import { getCampaignDetail, getCampaignDonations, getCampaignSummary } from "@/api/campaign.api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ProgressBar from "@/components/shared/ProgressBar"
 import { DetailSkeleton } from "@/components/shared/LoadingSkeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -34,6 +35,7 @@ export default function CampaignDetail() {
   const [donateOpen, setDonateOpen] = useState(false)
   const [qrOpen, setQrOpen] = useState(false)
   const [payment, setPayment] = useState(null)
+  const [activeTab, setActiveTab] = useState("story")
 
   const fetchData = useCallback(async (silent = false) => {
     if (!id) return
@@ -150,8 +152,22 @@ export default function CampaignDetail() {
 
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1.8fr)_minmax(320px,0.9fr)]">
           <div className="space-y-6">
-            <Tabs defaultValue="story" className="gap-6">
-              <TabsList variant="line" className="w-full justify-start gap-2 border-b border-emerald-100 pb-2">
+            <div className="sm:hidden">
+              <Select value={activeTab} onValueChange={setActiveTab}>
+                <SelectTrigger className="h-11 w-full rounded-full border-emerald-200 bg-white">
+                  <SelectValue placeholder="Chọn mục" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="story">Câu chuyện</SelectItem>
+                  <SelectItem value="donations">Danh sách ủng hộ</SelectItem>
+                  <SelectItem value="reports">Báo cáo chi tiêu</SelectItem>
+                  <SelectItem value="activity">Hoạt động</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-6">
+              <TabsList variant="line" className="hidden w-full flex-wrap justify-start gap-2 border-b border-emerald-100 pb-2 sm:flex">
                 <TabsTrigger value="story" className="rounded-full px-4">Câu chuyện</TabsTrigger>
                 <TabsTrigger value="donations" className="rounded-full px-4">Danh sách ủng hộ</TabsTrigger>
                 <TabsTrigger value="reports" className="rounded-full px-4">Báo cáo chi tiêu</TabsTrigger>

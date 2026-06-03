@@ -83,6 +83,7 @@ export default function Messages() {
   const [loadingConversations, setLoadingConversations] = useState(true)
   const [loadingMessages, setLoadingMessages] = useState(false)
   const [sending, setSending] = useState(false)
+  const [mobileView, setMobileView] = useState("list")
 
   const activeConversationIdRef = useRef(null)
   const messageEndRef = useRef(null)
@@ -170,13 +171,21 @@ export default function Messages() {
       }
       openedTargetUserRef.current = userId
       openConversationWithUser(userId)
+      setMobileView("chat")
       return
     }
 
     if (!userId && conversations.length && !activeConversation) {
       setActiveConversation(conversations[0])
+      setMobileView("chat")
     }
   }, [userId, conversations, activeConversation, openConversationWithUser])
+
+  useEffect(() => {
+    if (!activeConversation) {
+      setMobileView("list")
+    }
+  }, [activeConversation])
 
   useEffect(() => {
     const conversationId = activeConversation?._id
@@ -240,6 +249,7 @@ export default function Messages() {
 
   const handleSelectConversation = (conversation) => {
     setActiveConversation(conversation)
+    setMobileView("chat")
   }
 
   const updateConversationFromMessage = useCallback((message) => {
@@ -352,8 +362,10 @@ export default function Messages() {
   })
 
   return (
-    <div className="mx-auto my-4 flex h-[calc(100vh-9rem)] w-full max-w-7xl overflow-hidden rounded-3xl border border-slate-200 bg-[#eff4ff]">
-      <aside className="flex w-full max-w-95 flex-col border-r border-slate-200/70 bg-white">
+    <div className="mx-auto my-0 flex h-[calc(100vh-5rem)] w-full max-w-7xl overflow-hidden rounded-none border-0 bg-[#eff4ff] md:my-4 md:h-[calc(100vh-9rem)] md:rounded-3xl md:border md:border-slate-200">
+      <aside
+        className={`flex w-full flex-col border-r border-slate-200/70 bg-white md:max-w-95 ${mobileView === "chat" ? "hidden md:flex" : "flex"}`}
+      >
         <div className="border-b border-slate-200/70 px-5 pb-4 pt-5">
           <h2 className="text-[30px] font-extrabold tracking-tight text-slate-900">Tin nhắn</h2>
           <div className="relative mt-4">
@@ -434,13 +446,22 @@ export default function Messages() {
         </div>
       </aside>
 
-      <section className="hidden min-w-0 flex-1 flex-col bg-emerald-50 md:flex">
+      <section
+        className={`min-w-0 flex-1 flex-col bg-emerald-50 ${mobileView === "list" ? "hidden md:flex" : "flex"}`}
+      >
         {activeConversation ? (
           <>
-            <header className="flex h-20 items-center justify-between border-b border-slate-200/70 bg-white/90 px-7 backdrop-blur">
+            <header className="flex h-20 items-center justify-between border-b border-slate-200/70 bg-white/90 px-4 backdrop-blur md:px-7">
+              <button
+                type="button"
+                className="rounded-full px-3 py-2 text-sm font-medium text-slate-700 md:hidden"
+                onClick={() => setMobileView("list")}
+              >
+                Quay lại
+              </button>
               <Link
                 to={activeOtherParticipant?._id ? `/profile/${activeOtherParticipant._id}` : "/messages"}
-                className="flex items-center gap-3 transition-opacity hover:opacity-85"
+                className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-85"
               >
                 <Avatar className="h-10 w-10 rounded-lg">
                   <AvatarImage src={activeOtherParticipant?.avatar} alt={activeOtherParticipant?.name} />
@@ -448,13 +469,13 @@ export default function Messages() {
                     {activeOtherParticipant?.name?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="truncate text-lg font-bold text-slate-900">
                   {activeOtherParticipant?.name || "Cuộc trò chuyện"}
                 </h3>
               </Link>
             </header>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-8 py-6">
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6">
               {loadingMessages ? (
                 <div className="space-y-4">
                   {Array.from({ length: 6 }).map((_, index) => (
@@ -480,7 +501,7 @@ export default function Messages() {
                         key={message._id}
                         className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                       >
-                        <div className={`max-w-[72%] ${isMine ? "items-end" : "items-start"} flex flex-col gap-1.5`}>
+                        <div className={`max-w-[85%] sm:max-w-[72%] ${isMine ? "items-end" : "items-start"} flex flex-col gap-1.5`}>
                           <div
                             className={`px-5 py-3 text-sm shadow-sm ${
                               isMine
@@ -520,7 +541,7 @@ export default function Messages() {
               )}
             </div>
 
-            <div className="border-t border-slate-200/70 bg-white px-6 py-4">
+            <div className="border-t border-slate-200/70 bg-white px-3 py-3 md:px-6 md:py-4">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -569,7 +590,7 @@ export default function Messages() {
                 </div>
               )}
 
-              <div className="flex items-end gap-3 rounded-2xl bg-emerald-50 p-2 pr-3">
+              <div className="flex items-end gap-2 rounded-2xl bg-emerald-50 p-2 pr-2 md:gap-3 md:pr-3">
                 <div className="flex items-center">
                   <button
                     type="button"
@@ -598,7 +619,7 @@ export default function Messages() {
                 <Button
                   onClick={handleSendMessage}
                   disabled={sending || (!messageText.trim() && !selectedFile)}
-                  className="h-10 w-10 rounded-xl bg-[#006c49] p-0 text-white shadow-lg shadow-emerald-900/20 hover:bg-[#005a3d]"
+                  className="h-10 w-10 shrink-0 rounded-xl bg-[#006c49] p-0 text-white shadow-lg shadow-emerald-900/20 hover:bg-[#005a3d]"
                 >
                   <SendHorizontal className="h-4 w-4" />
                 </Button>

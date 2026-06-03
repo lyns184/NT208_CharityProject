@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -13,10 +13,7 @@ export default function CampaignReportsTab({ disbursements = [] }) {
       <div className="space-y-4">
         <Card className="overflow-hidden rounded-[28px] border-emerald-100 bg-white shadow-sm">
           <CardContent className="p-8">
-            <div
-              className="grid items-center gap-4 border-b border-emerald-50 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground"
-              style={{ gridTemplateColumns: '25% 25% 25% 25%' }}
-            >
+            <div className="hidden items-center gap-4 border-b border-emerald-50 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground md:grid" style={{ gridTemplateColumns: '25% 25% 25% 25%' }}>
               <span className="text-left align-middle px-6">Nội dung chi</span>
               <span className="text-center align-middle px-6">Thời gian tạo</span>
               <span className="text-center align-middle px-6">Tổng tiền chi</span>
@@ -26,17 +23,13 @@ export default function CampaignReportsTab({ disbursements = [] }) {
             {disbursements.length ? (
               <div className="divide-y divide-emerald-50">
                 {disbursements.map((item) => (
-                  <div
-                    key={item._id}
-                    className="grid items-center gap-4 py-4 text-sm"
-                    style={{ gridTemplateColumns: '25% 25% 25% 25%' }}
-                  >
-                    <div className="min-w-0 px-6">
-                      <p className="font-semibold text-slate-900 line-clamp-1 text-left align-middle">{item.reason}</p>
+                  <div key={item._id} className="py-4 text-sm md:grid md:items-center md:gap-4 md:py-4" style={{ gridTemplateColumns: '25% 25% 25% 25%' }}>
+                    <div className="hidden md:block min-w-0 px-6">
+                      <p className="text-left align-middle line-clamp-1 font-semibold text-slate-900">{item.reason}</p>
                     </div>
-                    <span className="text-muted-foreground text-center align-middle px-6">{formatDate(item.createdAt)}</span>
-                    <span className="font-semibold text-emerald-700 text-center align-middle px-6">{formatVND(item.amount)}</span>
-                    <div className="flex items-center justify-end px-6">
+                    <span className="hidden px-6 text-center align-middle text-muted-foreground md:block">{formatDate(item.createdAt)}</span>
+                    <span className="hidden px-6 text-center align-middle font-semibold text-emerald-700 md:block">{formatVND(item.amount)}</span>
+                    <div className="hidden justify-end px-6 md:flex">
                       <Button
                         type="button"
                         variant="outline"
@@ -45,6 +38,24 @@ export default function CampaignReportsTab({ disbursements = [] }) {
                       >
                         Xem chi tiết
                       </Button>
+                    </div>
+
+                    <div className="md:hidden">
+                      <div className="flex items-start justify-between gap-3 rounded-2xl border border-emerald-50 bg-emerald-50/30 px-4 py-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold text-slate-900">{item.reason}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">{formatDate(item.createdAt)}</p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="shrink-0 rounded-full border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                          onClick={() => setSelected(item)}
+                        >
+                          Xem chi tiết
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}

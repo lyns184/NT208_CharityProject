@@ -9,6 +9,7 @@ import CampaignForm from "@/components/campaign/CampaignForm"
 import EmptyState from "@/components/shared/EmptyState"
 import { CardSkeleton } from "@/components/shared/LoadingSkeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -52,6 +53,7 @@ export default function MyCampaigns() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [updateLoading, setUpdateLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [tabValue, setTabValue] = useState("all")
 
   const fetchCampaigns = useCallback(async () => {
     setLoading(true)
@@ -397,8 +399,23 @@ export default function MyCampaigns() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="all">
-        <TabsList className="w-full justify-start rounded-full border border-slate-100 bg-white p-1 shadow-sm sm:w-auto">
+      <div className="sm:hidden">
+        <Select value={tabValue} onValueChange={setTabValue}>
+          <SelectTrigger className="h-11 w-full rounded-full border-slate-200 bg-white">
+            <SelectValue placeholder="Chọn trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            {CAMPAIGN_TABS.map((tab) => (
+              <SelectItem key={tab.value} value={tab.value}>
+                {tab.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Tabs value={tabValue} onValueChange={setTabValue}>
+        <TabsList className="hidden w-full justify-start rounded-full border border-slate-100 bg-white p-1 shadow-sm sm:flex sm:w-auto">
           {CAMPAIGN_TABS.map((tab) => (
             <TabsTrigger
               key={tab.value}
