@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useParams, Link } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import { getCampaignDetail, getCampaignDonations, getCampaignSummary } from "@/api/campaign.api"
+import { getCampaignStatementPdfUrl } from "@/api/report.api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ProgressBar from "@/components/shared/ProgressBar"
@@ -11,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ArrowLeft, Calendar, Clock } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, ReceiptText } from "lucide-react"
 import { ACCOUNT_TYPE, CAMPAIGN_STATUS } from "@/constants/enums"
 import { daysRemaining, formatDate, formatVND } from "@/lib/utils"
 import { toast } from "sonner"
@@ -127,6 +128,11 @@ export default function CampaignDetail() {
 
   const handlePaymentSuccess = () => {
     fetchData(true)
+  }
+
+  const handleOpenStatement = () => {
+    if (!campaignId) return
+    window.open(getCampaignStatementPdfUrl(campaignId), "_blank", "noopener,noreferrer")
   }
 
   return (
@@ -253,6 +259,18 @@ export default function CampaignDetail() {
                     disabled={!canDonate}
                   >
                     {canDonate ? "Ủng hộ ngay" : "Chiến dịch đã đóng"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-auto min-h-9 w-full min-w-0 shrink whitespace-normal rounded-full border-emerald-200 px-3 py-2 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                    onClick={handleOpenStatement}
+                  >
+                    <ReceiptText className="h-4 w-4 shrink-0" />
+                    <span className="min-w-0 text-center text-sm leading-snug">
+                      Xem bảng chi tiết giao dịch
+                    </span>
                   </Button>
                 </div>
               </CardContent>

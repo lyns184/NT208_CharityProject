@@ -22,6 +22,7 @@ const disbursementRoutes = require('./src/modules/disbursement/disbursement.rout
 const socialRoutes = require('./src/modules/social/social.routes');
 const verifyRoutes = require('./src/modules/verify/verify.routes');
 const chatRoutes = require('./src/modules/chat/chat.routes');
+const reportRoutes = require('./src/modules/report/report.routes');
 const { initChatSocket } = require('./src/modules/chat/chat.socket');
 const startCronJobs = require('./src/utils/cronJobs');
 
@@ -53,6 +54,7 @@ app.use('/api/v1/disbursement', disbursementRoutes);
 app.use('/api/v1/social', socialRoutes);
 app.use('/api/v1/verify', verifyRoutes);
 app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/reports', reportRoutes);
 
 // 404 handler
 app.use((req, res) => {
