@@ -23,6 +23,9 @@ import DisbursementRequest from "@/pages/DisbursementRequest"
 import Profile from "@/pages/Profile"
 import Messages from "@/pages/Messages"
 import Social from "@/pages/Social"
+import VideoFeed from "@/pages/VideoFeed"
+import VideoCreate from "@/pages/VideoCreate"
+import VideoEdit from "@/pages/VideoEdit"
 import SocialPostCreate from "@/pages/SocialPostCreate"
 import SocialPostDetail from "@/pages/SocialPostDetail"
 import AdminDashboard from "@/pages/admin/Dashboard"
@@ -48,6 +51,7 @@ function App() {
                   <Route path="/organizers" element={<Organizers />} />
                   <Route path="/social" element={<Social />} />
                   <Route path="/social/:id" element={<SocialPostDetail />} />
+                  <Route path="/videos" element={<VideoFeed />} />
                   <Route path="/profile/:profileID" element={<Profile />} />
 
                   {/* Protected user routes (still inside MainLayout) */}
@@ -59,6 +63,8 @@ function App() {
                     <Route path="/messages" element={<Messages />} />
                     <Route path="/messages/:userId" element={<Messages />} />
                     <Route path="/social/create" element={<SocialPostCreate />} />
+                    <Route path="/videos/create" element={<VideoCreate />} />
+                    <Route path="/videos/:id/edit" element={<VideoEdit />} />
                   </Route>
                 </Route>
 

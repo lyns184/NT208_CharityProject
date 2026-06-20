@@ -25,7 +25,11 @@ class CampaignController {
    */
   async list(req, res, next) {
     try {
-      const campaigns = await campaignService.getCampaigns(req.query.status, req.user)
+      const campaigns = await campaignService.getCampaigns(
+        req.query.status,
+        req.user,
+        req.query.provinceCode
+      )
       res.status(200).json(successResponse(campaigns, 'Lấy danh sách chiến dịch thành công'))
     } catch (err) {
       next(err)
@@ -66,7 +70,12 @@ class CampaignController {
    */
   async update(req, res, next) {
     try {
-      const campaign = await campaignService.updateCampaign(req.params.id, req.user.id, req.body)
+      const campaign = await campaignService.updateCampaign(
+        req.params.id,
+        req.user.id,
+        req.user.role,
+        req.body
+      )
       res.status(200).json(successResponse(campaign, 'Cập nhật chiến dịch thành công'))
     } catch (err) {
       next(err)

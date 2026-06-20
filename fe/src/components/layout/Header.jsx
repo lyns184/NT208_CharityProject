@@ -32,6 +32,7 @@ const publicLinks = [
   { to: "/", label: "Trang chủ" },
   { to: "/organizers", label: "Cá nhân & Tổ chức" },
   { to: "/social", label: "Cộng đồng" },
+  { to: "/videos", label: "Video" },
   { to: "/campaigns", label: "Danh sách chiến dịch" },
 ]
 

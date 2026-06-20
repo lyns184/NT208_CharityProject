@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ArrowLeft, Calendar, Clock, ReceiptText } from "lucide-react"
+import { ArrowLeft, Calendar, CalendarClock, Clock, MapPin, ReceiptText } from "lucide-react"
 import { ACCOUNT_TYPE, CAMPAIGN_STATUS } from "@/constants/enums"
 import { daysRemaining, formatDate, formatVND } from "@/lib/utils"
 import { toast } from "sonner"
@@ -104,6 +104,7 @@ export default function CampaignDetail() {
     endDate,
     creator,
     creatorId,
+    location,
   } = campaign
 
   const creatorInfo = creator || creatorId || {}
@@ -282,7 +283,16 @@ export default function CampaignDetail() {
                   <Calendar className="h-4 w-4" />
                   Thời gian
                 </div>
-                <p className="text-sm text-slate-700">Kết thúc: {formatDate(endDate)}</p>
+                {location && (
+                  <div className="flex items-start gap-2 text-sm text-slate-700">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                    <span>{location.wardName}, {location.provinceName}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-sm text-slate-700">
+                  <CalendarClock className="h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>Kết thúc: {formatDate(endDate)}</span>
+                </div>
                 <div className="flex items-center gap-2 text-sm text-slate-700">
                   <Clock className="h-4 w-4 text-emerald-600" />
                   Trạng thái: {status}

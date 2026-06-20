@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { RefreshCcw, Search, HandCoins } from "lucide-react"
+import { RefreshCcw, Search, HandCoins, MapPin } from "lucide-react"
 import { toast } from "sonner"
 import { getCampaigns } from "@/api/campaign.api"
+import { getProvinces } from "@/api/location.api"
 import { ACCOUNT_TYPE } from "@/constants/enums"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -124,6 +125,15 @@ function CampaignCard({ campaign }) {
             {campaign.title}
           </h3>
 
+          {campaign.location && (
+            <div className="flex items-start gap-1 text-xs text-[#059669]">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span className="line-clamp-2">
+                {campaign.location.wardName}, {campaign.location.provinceName}
+              </span>
+            </div>
+          )}
+
           <p className="mt-auto text-xs text-[#6b7280]">
             {donationCount} lượt ủng hộ • Còn {daysLeft} ngày
           </p>
@@ -135,12 +145,23 @@ function CampaignCard({ campaign }) {
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([])
+  const [provinces, setProvinces] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("ALL")
   const [status, setStatus] = useState("ACTIVE")
   const [sortBy, setSortBy] = useState("latest")
+  const [provinceCode, setProvinceCode] = useState("ALL")
   const [search, setSearch] = useState("")
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
+
+  useEffect(() => {
+    getProvinces()
+      .then((response) => {
+        const payload = response.data?.data ?? response.data
+        setProvinces(Array.isArray(payload) ? payload : [])
+      })
+      .catch(() => setProvinces([]))
+  }, [])
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -168,12 +189,21 @@ export default function Campaigns() {
       const matchesTab =
         activeTab === "ALL" || campaign.creatorId?.accountType === activeTab
       const matchesStatus = !status || campaign.status === status
-      const searchBlob = [campaign.title, campaign.description, campaign.creatorId?.name]
+      const matchesProvince =
+        provinceCode === "ALL" ||
+        String(campaign.location?.provinceCode) === provinceCode
+      const searchBlob = [
+        campaign.title,
+        campaign.description,
+        campaign.creatorId?.name,
+        campaign.location?.wardName,
+        campaign.location?.provinceName,
+      ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
       const matchesSearch = !query || searchBlob.includes(query)
-      return matchesTab && matchesStatus && matchesSearch
+      return matchesTab && matchesStatus && matchesProvince && matchesSearch
     })
 
     const sorted = [...result].sort((a, b) => {
@@ -195,7 +225,7 @@ export default function Campaigns() {
     })
 
     return sorted
-  }, [campaigns, activeTab, status, sortBy, search])
+  }, [campaigns, activeTab, status, provinceCode, sortBy, search])
 
   const visibleCampaigns = filteredCampaigns.slice(0, visibleCount)
 
@@ -203,6 +233,7 @@ export default function Campaigns() {
     setActiveTab("ALL")
     setStatus("ACTIVE")
     setSortBy("latest")
+    setProvinceCode("ALL")
     setSearch("")
     setVisibleCount(INITIAL_VISIBLE)
   }
@@ -252,6 +283,29 @@ export default function Campaigns() {
                   {STATUS_OPTIONS.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <Label className="text-xs font-semibold uppercase text-[#6b7280]">Tỉnh/thành phố</Label>
+              <Select
+                value={provinceCode}
+                onValueChange={(value) => {
+                  setProvinceCode(value)
+                  setVisibleCount(INITIAL_VISIBLE)
+                }}
+              >
+                <SelectTrigger className="h-11 w-full rounded-lg border-[#e5e7eb] bg-white text-[#1f2937] sm:w-[14rem]">
+                  <SelectValue placeholder="Tỉnh/thành phố" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="ALL">Tất cả tỉnh/thành</SelectItem>
+                  {provinces.map((province) => (
+                    <SelectItem key={province.code} value={String(province.code)}>
+                      {province.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

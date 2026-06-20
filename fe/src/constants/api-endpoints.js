@@ -32,6 +32,10 @@ export const API = {
     PROOFS: (id) => `${BASE}/campaigns/${id}/proofs`,
     DONATIONS: (id) => `${BASE}/campaigns/${id}/donations`,
   },
+  LOCATION: {
+    PROVINCES: `${BASE}/locations/provinces`,
+    WARDS: (provinceCode) => `${BASE}/locations/provinces/${provinceCode}/wards`,
+  },
   PAYMENT: {
     CREATE: `${BASE}/payment/create`,
     STATUS: (id) => `${BASE}/payment/status/${id}`,

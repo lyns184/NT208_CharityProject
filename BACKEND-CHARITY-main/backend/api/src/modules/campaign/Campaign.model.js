@@ -1,5 +1,12 @@
 const mongoose = require('mongoose')
 
+const campaignLocationSchema = new mongoose.Schema({
+  provinceCode: { type: Number, required: true },
+  provinceName: { type: String, required: true },
+  wardCode: { type: Number, required: true },
+  wardName: { type: String, required: true },
+}, { _id: false })
+
 const campaignSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -16,6 +23,8 @@ const campaignSchema = new mongoose.Schema({
   },
   rejectionReason: { type: String, default: '' },
   endDate: { type: Date, required: true },
+  location: { type: campaignLocationSchema, required: true },
+  locationLocked: { type: Boolean, default: false },
   startedAt: Date,
   closedAt: Date,
   embedding: { type: [Number] }

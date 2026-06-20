@@ -23,6 +23,9 @@ const socialRoutes = require('./src/modules/social/social.routes');
 const verifyRoutes = require('./src/modules/verify/verify.routes');
 const chatRoutes = require('./src/modules/chat/chat.routes');
 const reportRoutes = require('./src/modules/report/report.routes');
+const videoRoutes = require('./src/modules/video/video.routes');
+const locationRoutes = require('./src/modules/location/location.routes');
+const campaignAssistantRoutes = require('./src/modules/campaign-assistant/campaign-assistant.routes');
 const { initChatSocket } = require('./src/modules/chat/chat.socket');
 const startCronJobs = require('./src/utils/cronJobs');
 
@@ -55,6 +58,9 @@ app.use('/api/v1/social', socialRoutes);
 app.use('/api/v1/verify', verifyRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/videos', videoRoutes);
+app.use('/api/v1/locations', locationRoutes);
+app.use('/api/v1/campaign-assistant', campaignAssistantRoutes);
 
 // 404 handler
 app.use((req, res) => {

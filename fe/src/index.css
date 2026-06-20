@@ -122,3 +122,33 @@
     @apply bg-background text-foreground;
     }
 }
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes video-heart-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35) rotate(-12deg);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(6deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -90%) scale(1.45) rotate(0deg);
+  }
+}
+
+.video-heart-burst {
+  animation: video-heart-burst 800ms ease-out forwards;
+}

@@ -7,6 +7,7 @@ const Donation = require('../payment/Donation.model')
 const Disbursement = require('../disbursement/Disbursement.model')
 const AppError = require('../../utils/AppError')
 const { ERROR_MESSAGES } = require('../../constants/messages')
+const locationService = require('../location/location.service')
 
 const PRIVATE_CAMPAIGN_STATUSES = new Set(['PENDING', 'REJECTED'])
 
@@ -52,13 +53,14 @@ class CampaignService {
       throw new AppError('Admin không được phép tạo chiến dịch', 403, 'FORBIDDEN')
     }
 
-    const { title, description, goalAmount, endDate, image } = data
+    const { title, description, goalAmount, endDate, image, location } = data
 
-    if (!title || !description || !goalAmount || !endDate || !image) {
+    if (!title || !description || !goalAmount || !endDate || !image || !location) {
       throw new AppError('Vui lòng điền đầy đủ thông tin', 400, 'VALIDATION_ERROR')
     }
 
     const displayId = await this.generateDisplayId()
+    const resolvedLocation = locationService.resolveLocation(location)
 
     const campaign = await Campaign.create({
       title,
@@ -66,6 +68,7 @@ class CampaignService {
       goalAmount,
       endDate,
       image,
+      location: resolvedLocation,
       displayId,
       creatorId: userId,
       currentBalance: 0,
@@ -78,7 +81,7 @@ class CampaignService {
   /**
    * Get campaigns list
    */
-  async getCampaigns(statusFilter = null, requester = null) {
+  async getCampaigns(statusFilter = null, requester = null, provinceCode = null) {
     let filter = {}
     const isAdmin = requester?.role === 'ADMIN'
 
@@ -103,6 +106,11 @@ class CampaignService {
       }
     } else {
       filter.status = { $in: ['ACTIVE', 'GOAL_REACHED'] }
+    }
+
+    if (provinceCode) {
+      locationService.getWards(provinceCode)
+      filter['location.provinceCode'] = Number(provinceCode)
     }
 
     const campaigns = await Campaign.find(filter)
@@ -225,27 +233,51 @@ class CampaignService {
   /**
    * Update campaign
    */
-  async updateCampaign(campaignId, userId, data) {
+  async updateCampaign(campaignId, userId, userRole, data) {
     const campaign = await Campaign.findById(campaignId)
     if (!campaign) {
       throw new AppError('Chiến dịch không tồn tại', 404, 'NOT_FOUND')
     }
 
-    if (campaign.creatorId.toString() !== userId.toString()) {
+    const isAdmin = userRole === 'ADMIN'
+    if (!isAdmin && campaign.creatorId.toString() !== userId.toString()) {
       throw new AppError('Bạn không có quyền thao tác chiến dịch này', 403, 'FORBIDDEN')
     }
 
-    if (campaign.status === 'CLOSED') {
+    if (!isAdmin && campaign.status === 'CLOSED') {
       throw new AppError('Chiến dịch đã đóng nên không thể chỉnh sửa thông tin', 400, 'VALIDATION_ERROR')
     }
 
-    const { title, description, image } = data
+    const { title, description, image, location } = data
+
+    if (location) {
+      const resolvedLocation = locationService.resolveLocation(location)
+      const locationChanged =
+        campaign.location?.provinceCode !== resolvedLocation.provinceCode ||
+        campaign.location?.wardCode !== resolvedLocation.wardCode
+
+      if (
+        locationChanged &&
+        !isAdmin &&
+        campaign.locationLocked
+      ) {
+        throw new AppError(
+          'Địa điểm đã bị khóa sau khi chiến dịch được duyệt',
+          403,
+          'LOCATION_LOCKED'
+        )
+      }
+
+      campaign.location = resolvedLocation
+    }
 
     if (title) campaign.title = title
     if (description) campaign.description = description
     if (image) campaign.image = image
-    campaign.status = 'PENDING'
-    campaign.rejectionReason = ''
+    if (!isAdmin) {
+      campaign.status = 'PENDING'
+      campaign.rejectionReason = ''
+    }
 
     await campaign.save()
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { Clock, User } from "lucide-react"
+import { Clock, MapPin, User } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import StatusBadge from "@/components/shared/StatusBadge"
 import ProgressBar from "@/components/shared/ProgressBar"
@@ -47,6 +47,15 @@ export default function CampaignCard({ campaign }) {
               {campaign.description || ""}
             </p>
           </div>
+
+          {campaign.location && (
+            <div className="mt-2 flex min-h-5 items-center justify-center gap-1 text-xs text-emerald-700">
+              <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">
+                {campaign.location.wardName}, {campaign.location.provinceName}
+              </span>
+            </div>
+          )}
 
           {/* Progress */}
           <div className="mt-1 w-full space-y-1.5">

@@ -80,7 +80,10 @@ class AdminService {
       status: normalizedStatus,
       rejectionReason: normalizedStatus === 'REJECTED' ? trimmedReason : '',
     }
-    if (normalizedStatus === 'ACTIVE') updateData.startedAt = new Date()
+    if (normalizedStatus === 'ACTIVE') {
+      updateData.startedAt = new Date()
+      updateData.locationLocked = true
+    }
     return await Campaign.findByIdAndUpdate(campaignId, updateData, { new: true })
   }
 

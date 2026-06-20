@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import ImageUpload from "@/components/shared/ImageUpload"
+import CampaignLocationFields from "@/components/campaign/CampaignLocationFields"
 import { CAMPAIGN_STATUS } from "@/constants/enums"
 import { formatVND } from "@/lib/utils"
 import { Loader2, AlertTriangle } from "lucide-react"
@@ -14,29 +15,26 @@ export default function CampaignForm({ initialData, onSubmit, isLoading }) {
   const isEditing = !!initialData
   const isActiveEditing = isEditing && initialData.status === CAMPAIGN_STATUS.ACTIVE
   const isRejectedEditing = isEditing && initialData.status === CAMPAIGN_STATUS.REJECTED
+  const isLocationLocked =
+    isEditing &&
+    (initialData.locationLocked ||
+      ![CAMPAIGN_STATUS.PENDING, CAMPAIGN_STATUS.REJECTED].includes(initialData.status))
 
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    goalAmount: "",
-    endDate: "",
-    image: null,
-  })
-
-  useEffect(() => {
-    if (initialData) {
-      setForm({
-        title: initialData.title || "",
-        description: initialData.description || "",
-        goalAmount: initialData.goalAmount || "",
-        endDate: initialData.endDate
-          ? new Date(initialData.endDate).toISOString().split("T")[0]
-          : "",
-        image: initialData.image || null,
-      })
-    }
-  }, [initialData])
-
+  const [form, setForm] = useState(() => ({
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    goalAmount: initialData?.goalAmount || "",
+    endDate: initialData?.endDate
+      ? new Date(initialData.endDate).toISOString().split("T")[0]
+      : "",
+    image: initialData?.image || null,
+    location: initialData?.location || {
+      provinceCode: "",
+      provinceName: "",
+      wardCode: "",
+      wardName: "",
+    },
+  }))
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
@@ -64,6 +62,10 @@ export default function CampaignForm({ initialData, onSubmit, isLoading }) {
       toast.error("Mục tiêu tối thiểu là 100.000 VNĐ")
       return false
     }
+    if (!form.location.provinceCode || !form.location.wardCode) {
+      toast.error("Vui lòng chọn tỉnh/thành phố và phường/xã")
+      return false
+    }
     if (!form.endDate) {
       toast.error("Vui lòng chọn ngày kết thúc")
       return false
@@ -87,6 +89,7 @@ export default function CampaignForm({ initialData, onSubmit, isLoading }) {
       description: form.description.trim(),
       goalAmount: Number(form.goalAmount),
       endDate: form.endDate,
+      location: form.location,
     }
 
     if (form.image) {
@@ -149,6 +152,12 @@ export default function CampaignForm({ initialData, onSubmit, isLoading }) {
         />
         <p className="text-xs text-muted-foreground">Mô tả chi tiết giúp bạn nhận được nhiều ủng hộ hơn</p>
       </div>
+
+      <CampaignLocationFields
+        value={form.location}
+        onChange={(location) => setForm((prev) => ({ ...prev, location }))}
+        disabled={isLocationLocked}
+      />
 
       {/* Goal Amount & End Date */}
       <div className="grid gap-6 sm:grid-cols-2">
