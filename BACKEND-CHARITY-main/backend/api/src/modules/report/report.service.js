@@ -74,13 +74,40 @@ class ReportService {
     try {
       puppeteer = require('puppeteer')
     } catch (error) {
-      throw new AppError('Puppeteer is not installed in backend', 500, 'INTERNAL_ERROR')
+      const dependencyError = new AppError(
+        'Không thể nạp Puppeteer. Hãy chạy npm ci trong thư mục backend/api.',
+        500,
+        'PUPPETEER_LOAD_ERROR'
+      )
+      dependencyError.causeMessage = error.message
+      throw dependencyError
     }
 
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    })
+    const launchOptions = {
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+      ],
+    }
+
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
+    }
+
+    let browser
+    try {
+      browser = await puppeteer.launch(launchOptions)
+    } catch (error) {
+      const launchError = new AppError(
+        'Không thể khởi chạy Chromium để tạo PDF. Kiểm tra Chrome/Chromium và các thư viện hệ thống trên máy chủ.',
+        500,
+        'PUPPETEER_LAUNCH_ERROR'
+      )
+      launchError.causeMessage = error.message
+      throw launchError
+    }
 
     try {
       const page = await browser.newPage()
