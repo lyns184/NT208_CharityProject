@@ -18,8 +18,7 @@ Hệ thống gồm ứng dụng React, REST API Node.js/Express, MongoDB, Socket
 - [API chính](#api-chính)
 - [Scripts](#scripts)
 - [Kiểm tra chất lượng](#kiểm-tra-chất-lượng)
-- [Triển khai](#triển-khai)
-- [Troubleshooting](#troubleshooting)
+
 
 ## Tính năng chính
 
@@ -157,7 +156,6 @@ Backend được tổ chức theo module. Mỗi module thường gồm model, se
 ```text
 WebThienNguyen/
 |-- README.md
-|-- deploy.md
 |-- fe/                                  # React frontend
 |   |-- src/
 |   |   |-- api/                         # API clients
