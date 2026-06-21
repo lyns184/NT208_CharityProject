@@ -502,3 +502,5 @@ Checklist smoke test khuyến nghị:
 10. Gửi tin nhắn realtime.
 11. Hỏi chatbot theo địa điểm và tiến độ trên desktop/mobile.
 
+
+### Chúng em đã biết làm web và hiểu hệ thống web hoạt động như thế nào.
